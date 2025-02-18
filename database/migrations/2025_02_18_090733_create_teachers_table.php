@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('academic_field_id')->nullable()->constrained('academic_fields')->cascadeOnDelete();
             $table->string('attendance_code', 10)->unique()->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
