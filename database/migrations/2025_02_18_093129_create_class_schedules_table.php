@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->string('presentation_code')->nullable();
             $table->foreignId('educational_group_id')->nullable()->constrained('educational_groups')->cascadeOnDelete();
+            $table->foreignId('term_id')->nullable()->constrained('term_schedules')->cascadeOnDelete();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->integer('attendance_time_frame')->default(15);

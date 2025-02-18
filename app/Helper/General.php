@@ -10,4 +10,6 @@ class General
         $code = substr(preg_replace('/[^0-9]/', '', $hash), 0, 10);
         return $code;
     }
+
+    
 }

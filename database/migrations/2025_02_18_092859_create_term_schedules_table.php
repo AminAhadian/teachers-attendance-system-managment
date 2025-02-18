@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('term_schedules', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
+            $table->string('code', 255);
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('sessions_number');
