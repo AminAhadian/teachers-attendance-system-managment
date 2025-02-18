@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Enum\Gender;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
@@ -34,11 +35,15 @@ class UserResource extends Resource
                     ->label(__('Email'))
                     ->email()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('gender')
+                Forms\Components\Select::make('gender')
                     ->label(__('Gender'))
-                    ->required()
-                    ->maxLength(255)
-                    ->default('male'),
+                    ->options([
+                        Gender::MALE() => __(Gender::MALE()),
+                        Gender::FEMALE() => __(Gender::FEMALE()),
+                    ])
+                    ->required(),
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name'),
                 Forms\Components\TextInput::make('password')
                     ->label(__('Password'))
                     ->password()
@@ -46,7 +51,8 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
                     ->label(__('Active'))
-                    ->required(),
+                    ->required()
+                    ->inline(false),
             ]);
     }
 
@@ -55,27 +61,33 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('username')
+                    ->label(__('Username'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label(__('Email'))
+                    ->placeholder(__('No Data'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('gender')
+                    ->label(__('Gender'))
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label(__('Active'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('Deleted At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
