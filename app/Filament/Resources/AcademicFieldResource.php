@@ -24,13 +24,13 @@ class AcademicFieldResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                ->label(__('Name'))
-                ->required()
+                    ->label(__('Name'))
+                    ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('description')
-                ->label(__('Description'))
-                ->columnSpanFull(),
+                    ->label(__('Description'))
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -39,22 +39,23 @@ class AcademicFieldResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('description')
-                ->words(10),
+                    ->placeholder(__('No Data'))
+                    ->words(10),
                 Tables\Columns\TextColumn::make('created_at')
-                ->label(__('Created At'))
-                ->dateTime()
+                    ->label(__('Created At'))
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                ->label(__('Updated At'))
-                ->dateTime()
+                    ->label(__('Updated At'))
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
-                ->label(__('Deleted At'))
-                ->dateTime()
+                    ->label(__('Deleted At'))
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

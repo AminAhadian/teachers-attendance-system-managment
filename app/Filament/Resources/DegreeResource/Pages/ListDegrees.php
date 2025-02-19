@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\DegreeResource\Pages;
 
-use App\Filament\Resources\DegreeResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\DegreeResource;
+use EightyNine\ExcelImport\ExcelImportAction;
 
 class ListDegrees extends ListRecords
 {
@@ -14,6 +15,11 @@ class ListDegrees extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            ExcelImportAction::make()
+                ->color("primary")
+                ->validateUsing([
+                    'name' => 'required',
+                ]),
         ];
     }
 }

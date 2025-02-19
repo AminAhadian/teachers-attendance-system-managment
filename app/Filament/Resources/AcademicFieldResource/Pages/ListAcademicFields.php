@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\AcademicFieldResource\Pages;
 
-use App\Filament\Resources\AcademicFieldResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use EightyNine\ExcelImport\ExcelImportAction;
+use App\Filament\Resources\AcademicFieldResource;
 
 class ListAcademicFields extends ListRecords
 {
@@ -14,6 +15,11 @@ class ListAcademicFields extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            ExcelImportAction::make()
+                ->color("primary")
+                ->validateUsing([
+                    'name' => 'required',
+                ]),
         ];
     }
 }

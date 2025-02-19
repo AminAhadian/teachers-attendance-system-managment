@@ -41,6 +41,7 @@ class DegreeResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->placeholder(__('No Data'))
                     ->words(10),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created At'))
