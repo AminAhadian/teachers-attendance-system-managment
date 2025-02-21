@@ -20,12 +20,12 @@ class TeacherImport implements ToCollection, WithHeadingRow
         foreach ($rows as $row) {
             $user = User::updateOrCreate(
                 [
-                    'username' => $row['national_code'],
+                    'username' => $row['personnel_code'],
                 ],
                 [
                     'name' => $row['name'],
-                    'username' => $row['national_code'],
-                    'password' => Hash::make($row['national_code']),
+                    'username' => $row['personnel_code'],
+                    'password' => Hash::make($row['personnel_code']),
                     'gender' => $this->mapGender($row['gender'])
                 ]
             );
@@ -43,8 +43,8 @@ class TeacherImport implements ToCollection, WithHeadingRow
             Teacher::create([
                 'personnel_code' => $row['personnel_code'],
                 'user_id' => $user->id,
-                'degree_id' => $degree->id,
-                'academic_field_id' => $academicField->id,
+                'degree_id' => $degree->id ?? null,
+                'academic_field_id' => $academicField->id ?? null,
                 'attendance_code' => General::generateAttendanceCode($row['personnel_code'])
             ]);
         }

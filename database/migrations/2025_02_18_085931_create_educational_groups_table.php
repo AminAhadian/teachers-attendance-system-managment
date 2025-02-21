@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code', 20)->unique()->nullable();
-            $table->foreignId('head_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('head_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

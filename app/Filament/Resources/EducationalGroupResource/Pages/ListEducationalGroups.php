@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\ClassScheduleResource\Pages;
+namespace App\Filament\Resources\EducationalGroupResource\Pages;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use EightyNine\ExcelImport\ExcelImportAction;
-use App\Filament\Resources\ClassScheduleResource;
-use App\Imports\ClassScheduleImport;
+use App\Filament\Resources\EducationalGroupResource;
 
-class ListClassSchedules extends ListRecords
+class ListEducationalGroups extends ListRecords
 {
-    protected static string $resource = ClassScheduleResource::class;
+    protected static string $resource = EducationalGroupResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -20,8 +19,8 @@ class ListClassSchedules extends ListRecords
                 ->color("primary")
                 ->validateUsing([
                     'name' => 'required',
-                ])
-                ->use(ClassScheduleImport::class),
+                    'code' => 'required',
+                ]),
         ];
     }
 }

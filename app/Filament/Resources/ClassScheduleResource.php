@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ClassScheduleResource\Pages;
-use App\Filament\Resources\ClassScheduleResource\RelationManagers;
-use App\Models\ClassSchedule;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Teacher;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\ClassSchedule;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ClassScheduleResource\Pages;
+use App\Filament\Resources\ClassScheduleResource\RelationManagers;
+use App\Filament\Resources\ClassScheduleResource\RelationManagers\ClassTimesRelationManager;
 
 class ClassScheduleResource extends Resource
 {
@@ -26,17 +29,30 @@ class ClassScheduleResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('teacher_id')
+                Forms\Components\Select::make('teacher_id')
                     ->required()
-                    ->numeric(),
+                    ->options(Teacher::with('user')->get()->pluck('user.name', 'id'))
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('term_id')
+                    ->required()
+                    ->relationship(name: 'term', titleAttribute: 'code')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('code')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('presentation_code')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('educational_group_id')
-                    ->numeric(),
-                Forms\Components\DatePicker::make('start_date'),
-                Forms\Components\DatePicker::make('end_date'),
+                Forms\Components\Select::make('educational_group_id')
+                    ->relationship(name: 'educationalGroup', titleAttribute: 'name'),
+                Forms\Components\DatePicker::make('start_date')
+                    ->disabled()
+                    ->dehydrated()
+                    ->jalali(),
+                Forms\Components\DatePicker::make('end_date')
+                    ->disabled()
+                    ->dehydrated()
+                    ->jalali(),
                 Forms\Components\TextInput::make('attendance_time_frame')
                     ->required()
                     ->numeric()
@@ -44,7 +60,8 @@ class ClassScheduleResource extends Resource
                 Forms\Components\TextInput::make('location')
                     ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
-                    ->required(),
+                    ->required()
+                    ->inline(false),
             ]);
     }
 
@@ -53,39 +70,45 @@ class ClassScheduleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('teacher_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('teacher.user.name')
+                    ->label(__('Teacher'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('code')
+                    ->label(__('Code'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('presentation_code')
+                    ->label(__('Presentation Code'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('educational_group_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('start_date')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('end_date')
-                    ->date()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('educationalGroup.name')
+                    ->label(__('Educational Group'))
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('term.name')
+                    ->label(__('Term'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('attendance_time_frame')
+                    ->label(__('Attendance Time Frame'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location')
+                    ->label(__('Location'))
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label(__('Active'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('Deleted At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -95,6 +118,7 @@ class ClassScheduleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -108,7 +132,7 @@ class ClassScheduleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ClassTimesRelationManager::class,
         ];
     }
 
