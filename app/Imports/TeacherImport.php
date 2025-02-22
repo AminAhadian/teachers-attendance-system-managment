@@ -50,12 +50,12 @@ class TeacherImport implements ToCollection, WithHeadingRow
         }
     }
 
-    protected function mapGender(string $genderPersian): Gender
+    protected function mapGender(string $genderPersian)
     {
         return match ($genderPersian) {
-            'زن' => Gender::FEMALE,
-            'مرد' => Gender::MALE,
-            default => Gender::MALE,
+            'زن' => Gender::Female->value,
+            'مرد' => Gender::Male->value,
+            default => Gender::Male->value,
         };
     }
 }

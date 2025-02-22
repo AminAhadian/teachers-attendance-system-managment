@@ -21,45 +21,57 @@ class ClassScheduleResource extends Resource
     protected static ?string $model = ClassSchedule::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('teacher_id')
+                    ->label(__('Teacher'))
                     ->required()
                     ->options(Teacher::with('user')->get()->pluck('user.name', 'id'))
                     ->searchable()
                     ->preload(),
                 Forms\Components\Select::make('term_id')
+                    ->label(__('Term'))
                     ->required()
                     ->relationship(name: 'term', titleAttribute: 'code')
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('code')
+                    ->label(__('Code'))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('presentation_code')
+                    ->label(__('Presentation Code'))
                     ->maxLength(255),
                 Forms\Components\Select::make('educational_group_id')
+                    ->label(__('Educational Group'))
                     ->relationship(name: 'educationalGroup', titleAttribute: 'name'),
                 Forms\Components\DatePicker::make('start_date')
+                    ->label(__('Start Date'))
                     ->disabled()
                     ->dehydrated()
                     ->jalali(),
                 Forms\Components\DatePicker::make('end_date')
+                    ->label(__('End Date'))
                     ->disabled()
                     ->dehydrated()
                     ->jalali(),
                 Forms\Components\TextInput::make('attendance_time_frame')
+                    ->label(__('Attendance Time Frame'))
                     ->required()
                     ->numeric()
                     ->default(15),
                 Forms\Components\TextInput::make('location')
+                    ->label(__('Location'))
                     ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
+                    ->label(__('Active'))
                     ->required()
                     ->inline(false),
             ]);

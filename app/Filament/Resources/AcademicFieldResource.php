@@ -18,6 +18,7 @@ class AcademicFieldResource extends Resource
     protected static ?string $model = AcademicField::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -39,8 +40,10 @@ class AcademicFieldResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label(__('Description'))
                     ->placeholder(__('No Data'))
                     ->words(10),
                 Tables\Columns\TextColumn::make('created_at')

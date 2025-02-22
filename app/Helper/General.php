@@ -3,6 +3,7 @@
 namespace App\Helper;
 
 use Carbon\Carbon;
+use App\Models\ClassSession;
 
 
 class General
@@ -109,5 +110,37 @@ class General
         }
 
         return $results;
+    }
+
+    public static function setTeacherDelay(ClassSession $classSession)
+    {
+        $classStartTime = Carbon::parse($classSession->actual_start_time);
+
+        if ($classSession->teacher_enter_at) {
+            $teacherEnterAt = Carbon::parse($classSession->teacher_enter_at);
+
+            if ($teacherEnterAt->gt($classStartTime)) {
+                $delayMinutes = $teacherEnterAt->diffInMinutes($classStartTime);
+                return $delayMinutes;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public static function setTeacherHurry(ClassSession $classSession)
+    {
+        $classEndTime = Carbon::parse($classSession->actual_end_time);
+
+        if ($classSession->teacher_exit_at) {
+            $teacherExitAt = Carbon::parse($classSession->teacher_exit_at);
+
+            if ($teacherExitAt->lt($classEndTime)) {
+                $hurryMinutes = $classEndTime->diffInMinutes($teacherExitAt);
+                return $hurryMinutes;
+            } else {
+                return null;
+            }
+        }
     }
 }

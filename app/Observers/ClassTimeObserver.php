@@ -42,11 +42,13 @@ class ClassTimeObserver
         while ($currentDate <= $endDate && $createdSessions < $sessionsNumber) {
             if ($currentDate->dayOfWeek == $dayOfWeek) {
                 ClassSession::create([
-                    'name' => $classSchedule->name,
+                    'name' => $classSchedule->name . '-جلسه ' . ' ' . $createdSessions,
                     'teacher_id' => $classSchedule->teacher_id,
                     'class_time_id' => $classTime->id,
+                    'actual_start_time' => $classTime->start_time,
+                    'actual_end_time' => $classTime->end_time,
                     'date' => $currentDate->toDateString(),
-                    'status' => Status::SCHEDULED
+                    'status' => Status::Scheduled->value
                 ]);
                 $createdSessions++;
             }
@@ -69,11 +71,13 @@ class ClassTimeObserver
                 $weekParity = General::getWeekParity($startDate, $endDate, $currentDate);
                 if (($classTime->type == 'odd' && $weekParity == 'odd') || ($classTime->type == 'even' && $weekParity == 'even')) {
                     ClassSession::create([
-                        'name' => $classSchedule->name,
+                        'name' => $classSchedule->name . '-جلسه ' . ' ' . $createdSessions,
                         'teacher_id' => $classSchedule->teacher_id,
                         'class_time_id' => $classTime->id,
+                        'actual_start_time' => $classTime->start_time,
+                        'actual_end_time' => $classTime->end_time,
                         'date' => $currentDate->toDateString(),
-                        'status' => Status::SCHEDULED,
+                        'status' => Status::Scheduled->value,
                     ]);
                     $createdSessions++;
                 }

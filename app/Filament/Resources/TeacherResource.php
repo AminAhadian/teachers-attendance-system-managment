@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
+use App\Helper\General;
 use App\Models\Teacher;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
@@ -14,22 +16,24 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TeacherResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TeacherResource\RelationManagers;
-use App\Helper\General;
 
 class TeacherResource extends Resource
 {
     protected static ?string $model = Teacher::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->relationship(name: 'user', titleAttribute: 'name')
+                    ->label(__('User'))
+                    ->options(User::role('teacher')->pluck('name', 'id'))
                     ->required(),
                 Forms\Components\TextInput::make('personnel_code')
+                    ->label(__('Personnel Code'))
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Set $set, ?string $state, $context) {
@@ -39,10 +43,13 @@ class TeacherResource extends Resource
                         $set('attendance_code', General::generateAttendanceCode($state));
                     }),
                 Forms\Components\Select::make('degree_id')
+                    ->label(__('Degree'))
                     ->relationship(name: 'degree', titleAttribute: 'name'),
                 Forms\Components\Select::make('academic_field_id')
+                    ->label(__('Academic Field'))
                     ->relationship(name: 'academicField', titleAttribute: 'name'),
                 Forms\Components\TextInput::make('attendance_code')
+                    ->label(__('Attendance Code'))
                     ->disabled()
                     ->dehydrated()
                     ->unique(ignoreRecord: true)
@@ -55,12 +62,16 @@ class TeacherResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('User'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('personnel_code')
+                    ->label(__('Personnel Code'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('degree.name')
+                    ->label(__('Degree'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('academicField.name')
+                    ->label(__('Academic Field'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created At'))

@@ -16,6 +16,7 @@ class ListDegrees extends ListRecords
         return [
             Actions\CreateAction::make(),
             ExcelImportAction::make()
+            ->label(__('Import'))
                 ->color("primary")
                 ->validateUsing([
                     'name' => 'required',

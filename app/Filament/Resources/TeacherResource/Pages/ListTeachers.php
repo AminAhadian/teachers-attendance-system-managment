@@ -17,6 +17,7 @@ class ListTeachers extends ListRecords
         return [
             Actions\CreateAction::make(),
             ExcelImportAction::make()
+                ->label(__('Import'))
                 ->color("primary")
                 ->use(TeacherImport::class)
                 ->validateUsing([

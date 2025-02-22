@@ -19,6 +19,7 @@ class EducationalGroupResource extends Resource
     protected static ?string $model = EducationalGroup::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -34,7 +35,7 @@ class EducationalGroupResource extends Resource
                 Forms\Components\Select::make('head_id')
                     ->label(__('Head Manager'))
                     ->required()
-                    ->options(Teacher::with('user')->get()->pluck('user.name', 'id')),
+                    ->options(Teacher::all()->pluck('personnel_code', 'id')),
                 Forms\Components\Textarea::make('description')
                     ->label(__('Description'))
                     ->columnSpanFull(),
@@ -51,8 +52,8 @@ class EducationalGroupResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->label(__('Code'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('head.user.name')
-                    ->label(__('Head Managment'))
+                Tables\Columns\TextColumn::make('head.name')
+                    ->label(__('Head Manager'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

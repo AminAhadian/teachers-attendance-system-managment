@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Enum\Status;
 use Filament\Tables;
+use App\Models\Teacher;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\ClassSession;
@@ -19,6 +20,7 @@ class ClassSessionResource extends Resource
     protected static ?string $model = ClassSession::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -34,7 +36,7 @@ class ClassSessionResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('teacher_id')
                     ->label(__('Teacher'))
-                    ->relationship('teacher', 'id')
+                    ->options(Teacher::with('user')->get()->pluck('user.name', 'id'))
                     ->required(),
                 Forms\Components\TimePicker::make('actual_start_time')
                     ->label(__('Actual Start Time')),
@@ -47,12 +49,12 @@ class ClassSessionResource extends Resource
                     ->label(__('Status'))
                     ->required()
                     ->options([
-                        Status::SCHEDULED() => Status::SCHEDULED(),
-                        Status::ENTER_ONLY() => Status::ENTER_ONLY(),
-                        Status::COMPLETED() => Status::COMPLETED(),
-                        Status::CANCELLED() => Status::CANCELLED(),
-                        Status::POSTPONDED() => Status::POSTPONDED(),
-                        Status::ABSENT() => Status::ABSENT(),
+                        Status::Scheduled->value => Status::Scheduled->value,
+                        Status::EnterOnly->value => Status::EnterOnly->value,
+                        Status::Completed->value => Status::Completed->value,
+                        Status::Cancelled->value => Status::Cancelled->value,
+                        Status::Postponed->value => Status::Postponed->value,
+                        Status::Absent->value => Status::Absent->value,
                     ]),
                 Forms\Components\Toggle::make('is_active')
                     ->label(__('Active'))
@@ -79,6 +81,12 @@ class ClassSessionResource extends Resource
                 Tables\Columns\TextColumn::make('teacher_exit_at')
                     ->label(__('Teacher Exit'))
                     ->placeholder(__('No Data')),
+                Tables\Columns\TextColumn::make('teacher_delay')
+                    ->label(__('Teacher Delay'))
+                    ->placeholder(__('No Data')),
+                Tables\Columns\TextColumn::make('teacher_hurry')
+                    ->label(__('Teacher Hurry'))
+                    ->placeholder(__('No Data')),
                 Tables\Columns\TextColumn::make('date')
                     ->label(__('Date'))
                     ->searchable()
@@ -86,12 +94,12 @@ class ClassSessionResource extends Resource
                 Tables\Columns\SelectColumn::make('status')
                     ->label(__('Status'))
                     ->options([
-                        Status::SCHEDULED() => Status::SCHEDULED(),
-                        Status::ENTER_ONLY() => Status::ENTER_ONLY(),
-                        Status::COMPLETED() => Status::COMPLETED(),
-                        Status::CANCELLED() => Status::CANCELLED(),
-                        Status::POSTPONDED() => Status::POSTPONDED(),
-                        Status::ABSENT() => Status::ABSENT(),
+                        Status::Scheduled->value => Status::Scheduled->value,
+                        Status::EnterOnly->value => Status::EnterOnly->value,
+                        Status::Completed->value => Status::Completed->value,
+                        Status::Cancelled->value => Status::Cancelled->value,
+                        Status::Postponed->value => Status::Postponed->value,
+                        Status::Absent->value => Status::Absent->value,
                     ]),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('Active'))

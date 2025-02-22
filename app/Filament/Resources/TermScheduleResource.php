@@ -19,6 +19,7 @@ class TermScheduleResource extends Resource
     protected static ?string $model = TermSchedule::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -52,14 +53,18 @@ class TermScheduleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
+                    ->label(__('Start Date'))
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
+                    ->label(__('End Date'))
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sessions_number')
+                    ->label(__('Sessions Number'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

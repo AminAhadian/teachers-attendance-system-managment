@@ -2,12 +2,19 @@
 
 namespace App\Enum;
 
-use ArchTech\Enums\InvokableCases;
+use Filament\Support\Contracts\HasLabel;
 
-enum Gender
+
+enum Gender: string implements HasLabel
 {
-    use InvokableCases;
+    case Male = 'Male';
+    case Female = 'Female';
 
-    case MALE;
-    case FEMALE;
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::Male => __('Male'),
+            self::Female => __('Female'),
+        };
+    }
 }

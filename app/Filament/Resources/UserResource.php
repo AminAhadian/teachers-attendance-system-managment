@@ -19,6 +19,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -38,12 +39,15 @@ class UserResource extends Resource
                 Forms\Components\Select::make('gender')
                     ->label(__('Gender'))
                     ->options([
-                        Gender::MALE() => __(Gender::MALE()),
-                        Gender::FEMALE() => __(Gender::FEMALE()),
+                        Gender::Male->value => __('Male'),
+                        Gender::Female->value => __('Female'),
                     ])
                     ->required(),
                 Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name'),
+                    ->label(__('ًRoles'))
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->searchable(),
                 Forms\Components\TextInput::make('password')
                     ->label(__('Password'))
                     ->password()
@@ -72,7 +76,14 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gender')
                     ->label(__('Gender'))
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state) {
+                        return match ($state) {
+                            'Female' => __('Female'),
+                            'Male' => __('Male'),
+                            default => $state,
+                        };
+                    }),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('Active'))
                     ->boolean(),
