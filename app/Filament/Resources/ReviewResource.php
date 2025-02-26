@@ -7,9 +7,14 @@ use App\Enum\Status;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Review;
+use App\Models\Teacher;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\ClassSession;
 use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ReviewResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -27,36 +32,49 @@ class ReviewResource extends Resource
         return false;
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('head_manager_id', auth()->id());
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('class_session_id')
-                    ->relationship('classSession', 'name')
+                    ->label(__('Class Session'))
+                    ->options(ClassSession::whereStatus(['Absent', 'Enter_Only'])->pluck('name', 'id'))
                     ->required()
                     ->preload()
-                    ->searchable(),
+                    ->live()
+                    ->searchable()
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        $classSession = ClassSession::find($state);
+                        if ($classSession) {
+                            $set('teacher_id', $classSession->teacher_id);
+                        } else {
+                            $set('teacher_id', null);
+                        }
+                    })
+                    ->disabled(),
                 Forms\Components\Select::make('teacher_id')
-                    ->relationship('teacher', 'id')
-                    ->required(),
-                Forms\Components\Select::make('attendance_manager_id')
+                    ->label(__('Teacher'))
+                    ->options(fn(Get $get): Collection => Teacher::query()->where('id', $get('teacher_id'))->with('user')->get()->pluck('user.name', 'id'))
                     ->required()
-                    ->options(User::role('attendanceManager')->pluck('name', 'id')),
+                    ->disabled()
+                    ->dehydrated(),
                 Forms\Components\Select::make('attendance_manager_decision')
-                    ->otipns([
-                        Status::Completed->value => Status::Completed->value,
-                        Status::Cancelled->value => Status::Cancelled->value,
-                        Status::RequiresHeadManagerReview->value => Status::RequiresHeadManagerReview->value,
-                    ]),
-                Forms\Components\Select::make('head_manager_id')
-                    ->options(User::role('headManager')->pluck('name', 'id'))
-                    ->preload()
-                    ->searchable(),
+                    ->label(__('Attendance Manager Decision'))
+                    ->options(Status::attendanceManagerOptions())
+                    ->disabled(),
                 Forms\Components\Select::make('head_manager_decision')
-                    ->otipns([
-                        Status::Approved->value => Status::Approved->value,
-                        Status::Cancelled->value => Status::Cancelled->value,
-                    ]),
+                    ->label(__('Head Manager Decision'))
+                    ->options(Status::headManagerOptions()),
+                Forms\Components\TextArea::make('description')
+                    ->label(__('Description'))
+                    ->nullable()
+                    ->columnSpanFull()
+                    ->disabled(),
             ]);
     }
 
@@ -65,23 +83,33 @@ class ReviewResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('classSession.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('teacher.personnel_code')
-                    ->numeric()
-                    ->sortable(),
+                    ->label(__('Class Session'))
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('teacher.user.name')
+                    ->label(__('Teacher'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('attendanceManager.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->label(__('Attendance Manager'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('attendance_manager_decision')
-                    ->searchable(),
+                    ->label(__('Attendance Manager Decision'))
+                    ->badge()
+                    ->color(fn(string $state): string => Status::from($state)->color())
+                    ->formatStateUsing(fn(string $state): string => __($state)),
                 Tables\Columns\TextColumn::make('headManager.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->label(__('Head Manager'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('head_manager_decision')
-                    ->searchable(),
+                    ->label(__('Head Manager Decision'))
+                    ->placeholder(__('No Data'))
+                    ->badge()
+                    ->color(fn(string $state): string => Status::from($state)->color())
+                    ->formatStateUsing(fn(string $state): string => __($state)),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
+                    ->label(__('Status'))
+                    ->badge()
+                    ->color(fn(string $state): string => Status::from($state)->color())
+                    ->formatStateUsing(fn(string $state): string => __($state)),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

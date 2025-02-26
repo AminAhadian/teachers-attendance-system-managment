@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Helper\General;
+use App\Helper\Helper;
 use App\Models\Teacher;
 use App\Models\ClassTime;
 use App\Models\TermSchedule;
@@ -65,7 +65,7 @@ class ClassScheduleImport implements ToCollection, WithHeadingRow
         if (!isset($this->termCache[$termCode])) {
             $this->termCache[$termCode] = TermSchedule::whereCode($termCode)->first();
         }
-        
+
         return $this->termCache[$termCode];
     }
 
@@ -89,7 +89,7 @@ class ClassScheduleImport implements ToCollection, WithHeadingRow
 
     protected function createClassTimes($classSchedule, $calendarString)
     {
-        $classTimes = General::parseClassTimeString($calendarString);
+        $classTimes = Helper::parseClassTimeString($calendarString);
 
         foreach ($classTimes as $classTime) {
             ClassTime::create([

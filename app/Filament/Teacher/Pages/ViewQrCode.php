@@ -18,7 +18,7 @@ class ViewQrCode extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-qr-code';
 
     protected static string $view = 'filament.teacher.pages.view-qr-code';
 
@@ -27,5 +27,15 @@ class ViewQrCode extends Page implements HasInfolists
     public function mount()
     {
         $this->attendanceCode = auth()->user()->teacher->attendance_code;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('View Qr Code');
+    }
+
+    public function getHeading(): string
+    {
+        return __('View Qr Code');
     }
 }

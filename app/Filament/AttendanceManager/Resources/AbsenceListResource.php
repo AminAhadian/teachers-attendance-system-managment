@@ -23,7 +23,7 @@ class AbsenceListResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('status', Status::ABSENT);
+        return parent::getEloquentQuery()->where('status', Status::Absent->value);
     }
 
     public static function canCreate(): bool
@@ -36,12 +36,12 @@ class AbsenceListResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('Session Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('classTime.classSchedule.name')
                     ->label(__('Class Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('teacher.personnel_code')
+                Tables\Columns\TextColumn::make('teacher.user.name')
                     ->label(__('Teacher'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('teacher_enter_at')
@@ -54,14 +54,11 @@ class AbsenceListResource extends Resource
                     ->label(__('Date'))
                     ->searchable()
                     ->jalaliDate('j/F/Y'),
-                Tables\Columns\SelectColumn::make('status')
+                Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
-                    ->options([
-                        Status::Completed->value => Status::Completed->value,
-                        Status::Cancelled->value => Status::Cancelled->value,
-                        Status::Postponed->value => Status::Postponed->value,
-                        Status::Absent->value => Status::Absent->value,
-                    ]),
+                    ->badge()
+                    ->color(fn(string $state): string => Status::from($state)->color())
+                    ->formatStateUsing(fn(string $state): string => __($state)),
             ])
             ->filters([
                 //

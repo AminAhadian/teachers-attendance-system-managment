@@ -17,7 +17,7 @@ class EditReview extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
+    protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['status'] = Status::Reviewed->value;
 

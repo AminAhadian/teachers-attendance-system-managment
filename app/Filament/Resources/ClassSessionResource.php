@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Enum\Status;
 use Filament\Tables;
+use App\Helper\Helper;
 use App\Models\Teacher;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -77,16 +78,20 @@ class ClassSessionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('teacher_enter_at')
                     ->label(__('Teacher Entery'))
-                    ->placeholder(__('No Data')),
+                    ->placeholder(__('No Data'))
+                    ->dateTime('H:i:s'),
                 Tables\Columns\TextColumn::make('teacher_exit_at')
                     ->label(__('Teacher Exit'))
-                    ->placeholder(__('No Data')),
+                    ->placeholder(__('No Data'))
+                    ->dateTime('H:i:s'),
                 Tables\Columns\TextColumn::make('teacher_delay')
                     ->label(__('Teacher Delay'))
-                    ->placeholder(__('No Data')),
+                    ->placeholder(__('No Data'))
+                    ->formatStateUsing(fn(string $state): string => Helper::convertMinutesToHoursMinutes($state)),
                 Tables\Columns\TextColumn::make('teacher_hurry')
                     ->label(__('Teacher Hurry'))
-                    ->placeholder(__('No Data')),
+                    ->placeholder(__('No Data'))
+                    ->formatStateUsing(fn(string $state): string => Helper::convertMinutesToHoursMinutes($state)),
                 Tables\Columns\TextColumn::make('date')
                     ->label(__('Date'))
                     ->searchable()

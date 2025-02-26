@@ -4,9 +4,10 @@ namespace App\Helper;
 
 use Carbon\Carbon;
 use App\Models\ClassSession;
+use Illuminate\Support\Facades\Log;
 
 
-class General
+class Helper
 {
     public static function generateAttendanceCode($key)
     {
@@ -114,33 +115,32 @@ class General
 
     public static function setTeacherDelay(ClassSession $classSession)
     {
-        $classStartTime = Carbon::parse($classSession->actual_start_time);
+        $classStartTime = $classSession->actual_start_time;
+        $teacherEnterAt = $classSession->teacher_enter_at;
 
-        if ($classSession->teacher_enter_at) {
-            $teacherEnterAt = Carbon::parse($classSession->teacher_enter_at);
-
-            if ($teacherEnterAt->gt($classStartTime)) {
-                $delayMinutes = $teacherEnterAt->diffInMinutes($classStartTime);
-                return $delayMinutes;
-            } else {
-                return null;
-            }
+        if ($teacherEnterAt && $teacherEnterAt->gt($classStartTime)) {
+            return abs($teacherEnterAt->diffInMinutes($classStartTime));
         }
+
+        return null;
     }
 
     public static function setTeacherHurry(ClassSession $classSession)
     {
-        $classEndTime = Carbon::parse($classSession->actual_end_time);
+        $classEndTime = $classSession->actual_end_time;
+        $teacherExitAt = $classSession->teacher_exit_at;
 
-        if ($classSession->teacher_exit_at) {
-            $teacherExitAt = Carbon::parse($classSession->teacher_exit_at);
-
-            if ($teacherExitAt->lt($classEndTime)) {
-                $hurryMinutes = $classEndTime->diffInMinutes($teacherExitAt);
-                return $hurryMinutes;
-            } else {
-                return null;
-            }
+        if ($teacherExitAt && $teacherExitAt->lt($classEndTime)) {
+            return abs($classEndTime->diffInMinutes($teacherExitAt));
         }
+
+        return null;
+    }
+
+    public static function convertMinutesToHoursMinutes(int $minutes): string
+    {
+        $time = Carbon::now()->startOfDay()->addMinutes($minutes);
+
+        return $time->format('G\h i\m');
     }
 }

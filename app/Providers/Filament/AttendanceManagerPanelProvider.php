@@ -28,7 +28,7 @@ class AttendanceManagerPanelProvider extends PanelProvider
             ->path('attendanceManager')
             ->login(CustomLogin::class)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Slate,
             ])
             ->topNavigation()
             ->discoverResources(in: app_path('Filament/AttendanceManager/Resources'), for: 'App\\Filament\\AttendanceManager\\Resources')

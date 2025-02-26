@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Helper\General;
+use App\Jobs\ProcessTeacherAttendance;
 use Carbon\Carbon;
 use App\Models\ClassSession;
 
@@ -19,13 +19,9 @@ class ClassSessionObserver
     /**
      * Handle the ClassSession "updated" event.
      */
-    public function updating(ClassSession $classSession): void
+    public function updated(ClassSession $classSession): void
     {
-        // dd(General::setTeacherDelay($classSession));
-        if (in_array($classSession->status, ['Completed'])) {
-            $classSession->teacher_delay = General::setTeacherDelay($classSession);
-        }
-        $classSession->save();
+
     }
 
     /**

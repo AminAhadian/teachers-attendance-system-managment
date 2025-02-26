@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\ClassTimeCreated;
-use App\Helper\General;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

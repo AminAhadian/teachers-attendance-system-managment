@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Home;
 
+use App\Jobs\ProcessTeacherAttendance;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Teacher;
@@ -10,10 +11,12 @@ use App\Models\ClassSession;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Validate;
 
 class Index extends Component
 {
-    public ?string $attendanceCode;
+    #[Validate('required|numeric|min:10|exists:teachers,attendance_code')]
+    public string $attendanceCode;
 
     #[Title('سامانه جامع اساتید دانشگاه آزاد اسلامی سبزوار')]
     #[Layout('layouts.master')]
@@ -22,10 +25,10 @@ class Index extends Component
         return view('livewire.home.index');
     }
 
-    public function rules()
-    {
-        return ['attendanceCode' => 'required|string|min:10|exists:teachers,attendance_code'];
-    }
+    // public function rules()
+    // {
+    //     return ['attendanceCode' => ];
+    // }
 
     public function save()
     {
@@ -44,7 +47,7 @@ class Index extends Component
             } elseif (is_null($validClassSession->teacher_exit_at)) {
                 $validClassSession->teacher_exit_at = $currentTime;
                 $validClassSession->save();
-
+                ProcessTeacherAttendance::dispatch($validClassSession);
                 $this->dispatchSwal('عملیات موفق', 'خروج شما در سامانه ثبت شد');
             } else {
                 $this->dispatchSwal('خطا', 'حضور و خروج شما قبلا ثبت شده است', 'error');
@@ -86,8 +89,8 @@ class Index extends Component
         foreach ($classSessions as $classSession) {
             $attendanceTimeFrame = $classSession->classTime->classSchedule->attendance_time_frame;
 
-            $actualStartTime = Carbon::parse($classSession->actual_start_time); // Session start time
-            $actualEndTime = Carbon::parse($classSession->actual_end_time); // Session end time
+            $actualStartTime = $classSession->actual_start_time; // Session start time
+            $actualEndTime = $classSession->actual_end_time; // Session end time
 
             // Session valid base on[attendance time frame] start time
             $validEnterTime = $actualStartTime->copy()->subMinutes($attendanceTimeFrame);

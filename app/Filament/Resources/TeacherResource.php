@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
-use App\Helper\General;
+use App\Helper\Helper;
 use App\Models\Teacher;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
@@ -40,7 +40,7 @@ class TeacherResource extends Resource
                         if (!isset($state)) {
                             return;
                         }
-                        $set('attendance_code', General::generateAttendanceCode($state));
+                        $set('attendance_code', Helper::generateAttendanceCode($state));
                     }),
                 Forms\Components\Select::make('degree_id')
                     ->label(__('Degree'))

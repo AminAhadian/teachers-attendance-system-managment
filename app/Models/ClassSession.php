@@ -19,6 +19,8 @@ class ClassSession extends Model
         'date',
         'teacher_enter_at',
         'teacher_exit_at',
+        'teacher_delay',
+        'teacher_hurry',
         'status',
         'is_active'
     ];
@@ -26,7 +28,11 @@ class ClassSession extends Model
     protected function casts()
     {
         return [
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'actual_start_time' => 'datetime',
+            'actual_end_time' => 'datetime',
+            'teacher_enter_at' => 'datetime',
+            'teacher_exit_at' => 'datetime',
         ];
     }
 

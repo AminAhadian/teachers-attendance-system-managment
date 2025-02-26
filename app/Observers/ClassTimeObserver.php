@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use Carbon\Carbon;
 use App\Enum\Status;
-use App\Helper\General;
+use App\Helper\Helper;
 use App\Models\ClassTime;
 use App\Models\ClassSession;
 use App\Models\ClassSchedule;
@@ -68,7 +68,7 @@ class ClassTimeObserver
 
         while ($currentDate <= $endDate && $createdSessions < $requiredSessions) {
             if ($currentDate->dayOfWeek == $dayOfWeek) {
-                $weekParity = General::getWeekParity($startDate, $endDate, $currentDate);
+                $weekParity = Helper::getWeekParity($startDate, $endDate, $currentDate);
                 if (($classTime->type == 'odd' && $weekParity == 'odd') || ($classTime->type == 'even' && $weekParity == 'even')) {
                     ClassSession::create([
                         'name' => $classSchedule->name . '-جلسه ' . ' ' . $createdSessions,

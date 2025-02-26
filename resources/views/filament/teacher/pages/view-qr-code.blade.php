@@ -8,11 +8,11 @@
     <x-filament::grid>
         <x-filament::section column="1">
             <x-slot name="heading">
-                Qr Code
+                {{ __('Qr Code') }}
             </x-slot>
 
             <x-slot name="description">
-                This is all the information we hold about the user.
+                {{ __('‌Use this qr code to add your attendance') }}
             </x-slot>
 
             <div class="flex items-center justify-center">

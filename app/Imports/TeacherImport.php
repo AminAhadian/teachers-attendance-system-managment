@@ -5,7 +5,7 @@ namespace App\Imports;
 use App\Enum\Gender;
 use App\Models\User;
 use App\Models\Degree;
-use App\Helper\General;
+use App\Helper\Helper;
 use App\Models\Teacher;
 use App\Models\AcademicField;
 use Illuminate\Support\Collection;
@@ -45,7 +45,7 @@ class TeacherImport implements ToCollection, WithHeadingRow
                 'user_id' => $user->id,
                 'degree_id' => $degree->id ?? null,
                 'academic_field_id' => $academicField->id ?? null,
-                'attendance_code' => General::generateAttendanceCode($row['personnel_code'])
+                'attendance_code' => Helper::generateAttendanceCode($row['personnel_code'])
             ]);
         }
     }
