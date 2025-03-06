@@ -57,12 +57,10 @@ class TermScheduleResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->label(__('Start Date'))
-                    ->date()
-                    ->sortable(),
+                    ->jalaliDate(),
                 Tables\Columns\TextColumn::make('end_date')
                     ->label(__('End Date'))
-                    ->date()
-                    ->sortable(),
+                    ->jalaliDate(),
                 Tables\Columns\TextColumn::make('sessions_number')
                     ->label(__('Sessions Number'))
                     ->numeric()

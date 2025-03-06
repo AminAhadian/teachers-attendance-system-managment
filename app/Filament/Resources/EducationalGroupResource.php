@@ -54,8 +54,7 @@ class EducationalGroupResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('head.name')
                     ->label(__('Head Manager'))
-                    ->numeric()
-                    ->sortable(),
+                    ->placeholder(__('No Data')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('class_sessions', function (Blueprint $table) {
-            $table->integer('teacher_delay')->defualt(0)->after('teacher_exit_at');
-            $table->integer('teacher_hurry')->defualt(0)->after('teacher_delay');
+            $table->integer('teacher_delay')->nullable()->defualt(0)->after('teacher_exit_at');
+            $table->integer('teacher_hurry')->nullable()->defualt(0)->after('teacher_delay');
         });
     }
 

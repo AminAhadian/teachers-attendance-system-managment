@@ -17,7 +17,7 @@ class Dashboard extends \Filament\Pages\Dashboard
     {
         return $form->schema([
             Section::make(__('Filters'))
-                ->description('Use this section to filter your data')
+                ->description(__('Use this section to filter your data'))
                 ->icon('heroicon-m-funnel')
                 ->schema([
                     Select::make('teacher_id')

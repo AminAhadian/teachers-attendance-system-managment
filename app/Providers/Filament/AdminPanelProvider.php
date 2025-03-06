@@ -26,8 +26,8 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('headManager')
-            ->path('headManager')
+            ->id('head-manager')
+            ->path('head-manager')
             ->login(CustomLogin::class)
             ->colors([
                 'primary' => Color::Sky,

@@ -47,6 +47,8 @@ class TeacherImport implements ToCollection, WithHeadingRow
                 'academic_field_id' => $academicField->id ?? null,
                 'attendance_code' => Helper::generateAttendanceCode($row['personnel_code'])
             ]);
+
+            $user->assignRole('teacher');
         }
     }
 

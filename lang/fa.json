@@ -1,4 +1,5 @@
 {
+    "Allowed Students Number": "تعداد دانشجو های مجاز",
     "Scheduled": "برنامه‌ریزی شده",
     "Enter Only": "فقط ورود",
     "Completed": "تکمیل شده",
@@ -388,6 +389,7 @@
     "Dominican Republic": "جمهوری دومینیکن",
     "Done.": "انجام شده.",
     "Download": "بارگیری",
+    "Download Sample": "بارگیری‌نمونه",
     "Download PDF": "بارگیری PDF",
     "Download Receipt": "بارگیری رسید",
     "Drop file or click to choose": "فایل را اینجا رها کنید یا برای انتخاب کلیک کنید",

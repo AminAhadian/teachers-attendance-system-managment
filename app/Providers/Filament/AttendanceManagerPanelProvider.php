@@ -24,8 +24,8 @@ class AttendanceManagerPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('attendanceManager')
-            ->path('attendanceManager')
+            ->id('attendance-manager')
+            ->path('attendance-manager')
             ->login(CustomLogin::class)
             ->colors([
                 'primary' => Color::Slate,

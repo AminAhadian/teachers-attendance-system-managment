@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\TeacherResource\Pages;
 
 use Filament\Actions;
+use App\Imports\TeacherImport;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\TeacherResource;
-use App\Imports\TeacherImport;
 use EightyNine\ExcelImport\ExcelImportAction;
+use Filament\Forms\Components\Actions\Action;
 
 class ListTeachers extends ListRecords
 {
@@ -22,12 +23,26 @@ class ListTeachers extends ListRecords
                 ->use(TeacherImport::class)
                 ->validateUsing([
                     'name' => 'required',
-                    'national_code' => 'required|numeric',
                     'personnel_code' => 'required|numeric',
                     'gender' => 'required',
                     'degree' => 'nullable',
                     'academic_field' => 'nullable',
-                ]),
+                ])->sampleExcel(
+                    sampleData: [
+                        [
+                            "name" => "کاربر تست",
+                            "personnel code" => "1234567890",
+                            "gender" => "زن",
+                            "degree" => "فوق لیسانس",
+                            "academic field" => "دامپزشکی"
+                        ],
+                    ],
+                    fileName: 'teachers.xlsx',
+                    sampleButtonLabel: __('Download Sample'),
+                    customiseActionUsing: fn(Action $action) => $action->color('primary')
+                        ->icon('heroicon-m-arrow-down-circle')
+                        ->requiresConfirmation(),
+                ),
         ];
     }
 }

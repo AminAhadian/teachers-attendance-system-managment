@@ -63,7 +63,7 @@ class TeacherResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label(__('User'))
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('personnel_code')
                     ->label(__('Personnel Code'))
                     ->searchable(),

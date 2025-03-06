@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Exception;
 use App\Helper\Helper;
 use App\Models\Teacher;
 use App\Models\ClassTime;
@@ -12,22 +13,26 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Filament\Notifications\Notification;
+use EightyNine\ExcelImport\DefaultImport;
 
-class ClassScheduleImport implements ToCollection, WithHeadingRow
+
+class ClassScheduleImport extends DefaultImport
 {
-    protected $termCache = [];
-    protected $teacherCache = [];
-    protected $educationalGroupCache = [];
+    protected array $termCache = [];
+    protected array $teacherCache = [];
+    protected array $educationalGroupCache = [];
 
     public function collection(Collection $rows)
     {
         DB::beginTransaction();
 
         try {
-            foreach ($rows as $row) {
-                $this->processRow($row);
+
+            foreach ($rows as $index => $row) {
+                $index = $index + 2;
+                $data = $row->toArray();
+                $this->processRow($data, $index);
             }
 
             DB::commit();
@@ -38,7 +43,7 @@ class ClassScheduleImport implements ToCollection, WithHeadingRow
         }
     }
 
-    protected function processRow($row)
+    protected function processRow($row, $index)
     {
         $term = $this->getTerm($row['term']);
         $teacher = $this->getTeacher($row['ostad_personnel_code']);
@@ -54,10 +59,23 @@ class ClassScheduleImport implements ToCollection, WithHeadingRow
             'code' => $row['code'],
             'term_id' => $term->id,
             'presentation_code' => $row['presentation_code'],
+            'location' => $row['location'],
             'educational_group_id' => $educationalGroup->id,
         ]);
 
         $this->createClassTimes($classSchedule, $row['calendar']);
+    }
+
+    function transformErrors(array $errors): string
+    {
+        $transformed = [];
+
+        foreach ($errors as $field => $messages) {
+            foreach ($messages as $message) {
+                $transformed[] = $message;
+            }
+        }
+        return implode("\n", $transformed);
     }
 
     protected function getTerm($termCode)
